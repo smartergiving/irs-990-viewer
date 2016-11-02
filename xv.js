@@ -3331,10 +3331,10 @@ var xv_outline = (function(){
 		if (!pane) {
 			pane = xv_dom.fromHTML('<div class="xv-outline">' +
 				'<div class="xv-outline-wrap">' +
-          '<h2 class="xv-shortcut-header">Summary</h2>' +
-          '<div class="xv-shortcut-inner">'+ 
-            '<span class="xv-node xv-outline-node xv-outline-tag"> '+
-            '<div class="xv-summary-name"><span></span></div>' +
+          '<h2 class="xv-summary-header">Summary</h2>' +
+          '<div class="xv-summary-inner">'+ 
+            '<span class="xv-node xv-summary-node"> '+
+              '<div class="xv-summary-name"><span></span></div>' +
               '<div class="xv-summary-tax-year">Tax Year: <span></span></div>' +
               '<div class="xv-summary-assets">Assets: $<span></span></div>' +
               '<div class="xv-summary-website"><a target="_blank"></a></div>' +
@@ -3380,8 +3380,9 @@ var xv_outline = (function(){
     var hideSummaryElement = " " + 'xv-summary-hide';
 
     // Foundation name
+    var foundationNameSchemas = '[data-irs-key="BusinessNameLine1"], [data-irs-key="BusinessNameLine1Txt"]'
     var filerElement = document.querySelectorAll('[data-irs-key="Filer"]')[0];
-    var foundationNameElement = filerElement.querySelectorAll('[data-irs-key="BusinessNameLine1"]')[0]
+    var foundationNameElement = filerElement.querySelectorAll(foundationNameSchemas)[0];
     if (foundationNameElement) {
       var foundationNameText = foundationNameElement.parentNode.parentNode.getElementsByClassName('xv-text')[0].textContent;
       var foundationNameTarget = document.getElementsByClassName('xv-summary-name')[0].getElementsByTagName('span')[0];
@@ -3391,7 +3392,8 @@ var xv_outline = (function(){
     }
 
     // Tax year
-    var taxYearElement = document.querySelectorAll('[data-irs-key="TaxYr"]')[0];
+    var taxYearSchemas = '[data-irs-key="TaxYr"], [data-irs-key="TaxYear"]'
+    var taxYearElement = document.querySelectorAll(taxYearSchemas)[0];
     if (taxYearElement) {
       var taxYearText = taxYearElement.getElementsByClassName('xv-tag-children')[0].getElementsByClassName('xv-text')[0].textContent;
       var taxYearTarget = document.getElementsByClassName('xv-summary-tax-year')[0].getElementsByTagName('span')[0];
@@ -3401,7 +3403,8 @@ var xv_outline = (function(){
     }
 
     // Assets
-    var assetsElement = document.querySelectorAll('[data-irs-key="FMVAssetsEOYAmt"]')[0];
+    var assetsSchemas = '[data-irs-key="FMVAssetsEOYAmt"], [data-irs-key="FMVAssetsEOY"]'
+    var assetsElement = document.querySelectorAll(assetsSchemas)[0];
     if (assetsElement) {
       var assetsText = assetsElement.getElementsByClassName('xv-tag-children')[0].getElementsByClassName('xv-text')[0].textContent;
       var assetsTextFormatted = parseInt(assetsText).toLocaleString('en');
@@ -3412,22 +3415,30 @@ var xv_outline = (function(){
     }
 
     // Website
-    var websiteElement = document.querySelectorAll('[data-irs-key="WebsiteAddressTxt"]')[0];
-    if (websiteElement.length > 5) { //Handles n/A, N/A, etc
-      var websiteText = websiteElement.getElementsByClassName('xv-tag-children')[0].getElementsByClassName('xv-text')[0].textContent;
-      var websiteTarget = document.getElementsByClassName('xv-summary-website')[0].getElementsByTagName('a')[0];
-      websiteTarget.textContent = websiteText;
-      if (new URI(websiteText).scheme === null) {
-        websiteText = 'http://' + websiteText;
-      }
-      websiteTarget.href = websiteText;
-    } else {
+    if (taxYearText == "2010") {
       document.getElementsByClassName('xv-summary-website')[0].className += hideSummaryElement;
+    } else {
+      var websiteSchemas = '[data-irs-key="WebsiteAddressTxt"], [data-irs-key="WebsiteAddress"]'
+      var websiteElement = document.querySelectorAll(websiteSchemas)[0];
+      var websiteTextCheck = websiteElement.getElementsByClassName('xv-tag-children')[0].getElementsByClassName('xv-text')[0].getElementsByTagName('a')[0];
+      if (websiteElement && websiteTextCheck) {
+        var websiteText = websiteElement.getElementsByClassName('xv-tag-children')[0].getElementsByClassName('xv-text')[0].getElementsByTagName('a')[0].textContent
+        var websiteUrl = websiteElement.getElementsByClassName('xv-tag-children')[0].getElementsByClassName('xv-text')[0].getElementsByTagName('a')[0].href
+        var websiteTarget = document.getElementsByClassName('xv-summary-website')[0].getElementsByTagName('a')[0];
+        websiteTarget.textContent = websiteText;
+        if (new URI(websiteText).scheme === null) {
+          websiteText = 'http://' + websiteText;
+        }
+        websiteTarget.href = websiteUrl;
+      } else {
+        document.getElementsByClassName('xv-summary-website')[0].className += hideSummaryElement;
+      }
     }
 
     //Board Members
-    var boardIRSKey = 'OfficerDirTrstKeyEmplInfoGrp';
-    var boardElement = document.querySelectorAll('[data-irs-key="' + boardIRSKey + '"]')[0];
+    var boardSchemas = '[data-irs-key="OfficerDirTrstKeyEmplInfoGrp"], [data-irs-key="OfcrDirTrusteesKeyEmployeeInfo"]'
+    var boardIRSKey = '';
+    var boardElement = document.querySelectorAll(boardSchemas)[0];
     if (boardElement) {
       var boardXVID = boardElement.dataset.xvId;
       var boardTarget = document.getElementsByClassName('xv-summary-board')[0];
@@ -3437,8 +3448,8 @@ var xv_outline = (function(){
     }
 
     //Grantmaking Activity
-    var grantsIRSKey = 'SupplementaryInformationGrp';
-    var grantsElement = document.querySelectorAll('[data-irs-key="' + grantsIRSKey + '"]')[0];
+    var grantsSchemas = '[data-irs-key="SupplementaryInformationGrp"], [data-irs-key="SupplementaryInformation"]'
+    var grantsElement = document.querySelectorAll(grantsSchemas)[0];
     if (grantsElement) {
       var grantsXVID = grantsElement.dataset.xvId;
       var grantsTarget = document.getElementsByClassName('xv-summary-grants')[0];
@@ -3446,7 +3457,6 @@ var xv_outline = (function(){
     } else {
       document.getElementsByClassName('xv-summary-grants')[0].className += hideSummaryElement; 
     }
-
 		
 		pane_content = xv_dom.getOneByClass('xv-outline-inner', pane);
 		resize_handler = xv_dom.getOneByClass('xv-outline-rs-handler', pane);
