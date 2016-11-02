@@ -1,0 +1,46 @@
+{
+  "name": "IRS Form 990PF Viewer",
+  "description": "The IRS freely publishes IRS Form 990s in machine-readable format. This tool makes it easier for humans to read the files. **Form 990PF only**",
+  "version": "0.1.0",
+  "manifest_version": 2,
+  "background": {
+    "page": "background.html"
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "xv.js",
+        "jquery-3.1.1.min.js",
+        "controller.js"
+      ],
+      "css": [
+        "xv.css"
+      ],
+      "matches": [
+        "https://s3.amazonaws.com/irs-form-990/*"
+      ],
+      "exclude_matches": [
+        "https://s3.amazonaws.com/irs-form-990/index*"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    "xv.css"
+  ],
+  "icons": {
+    "128": "icon-128.png",
+    "16": "icon-16.png",
+    "48": "icon-48.png"
+  },
+  "options_page": "options.html",
+  "page_action": {
+    "default_icon": "icon-48.png",
+    "default_title": "IRS Form 990PF Viewer"
+  },
+  "permissions": [
+    "https://s3.amazonaws.com/irs-form-990/*"
+  ],
+  "update_url": "https://clients2.google.com/service/update2/crx",
+  "content_security_policy": "script-src 'self'; object-src 'self'"
+}
