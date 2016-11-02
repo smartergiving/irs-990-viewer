@@ -1885,15 +1885,16 @@ var xv_renderer = (function() {
 			add_class += ' xv-one-line';
 			
 		if (!depth && canBeCollapsed(node)) {
-			skip_children = true;
+			//skip_children = true;
+      skip_children = false; //IRS 990 - Never skip children
 			add_class += ' xv-collapsed xv-has-unprocessed';
 		}
 			
-		result.push('<span class="xv-node xv-tag' + add_class + '" data-xv-id="' + generateId(node) + '">');
+		result.push('<span class="xv-node xv-tag' + add_class + '" data-irs-key="' + node.nodeName + '" data-xv-id="' + generateId(node) + '">');
 		result.push('<span class="xv-tag-switcher"></span>');
 		result.push('<span class="xv-tag-open">');
 		//result.push('<span class="xv-tag-name">' + node.nodeName +'</span>');
-    result.push('<span class="xv-tag-name" data-irs-key="' + node.nodeName + '">' + node.nodeName +'</span>')
+    result.push('<span class="xv-tag-name">' + node.nodeName +'</span>')
 		if (attrs.length)
 			result.push(' ' + attrs.join(' '));
 			
@@ -3332,21 +3333,22 @@ var xv_outline = (function(){
 				'<div class="xv-outline-wrap">' +
           '<h2 class="xv-shortcut-header">Summary</h2>' +
           '<div class="xv-shortcut-inner">'+ 
-          '<span class="xv-node xv-outline-node xv-outline-tag" data-xv-id="36"> '+
-          '<div class="xv-summary-name">Reser Family Foundation</div>' +
-          '<div>Tax Year: <span class="xv-summary-tax-year"></span></div>' +
-          '<div>Assets: $<span class="xv-summary-assets">20009223</span></div>' +
-          '<div>' + '<a class="xv-summary-website"></a>' + '</div>' +
-          '</span></div>' +
+            '<span class="xv-node xv-outline-node xv-outline-tag"> '+
+            '<div class="xv-summary-name"><span></span></div>' +
+              '<div class="xv-summary-tax-year">Tax Year: <span></span></div>' +
+              '<div class="xv-summary-assets">Assets: $<span></span></div>' +
+              '<div class="xv-summary-website"><a target="_blank"></a></div>' +
+            '</span> ' + 
+          '</div>' +
           '<h2 class="xv-shortcut-header">Shortcuts</h2>' +
           '<div class="xv-shortcut-inner">'+ 
-            '<span class="xv-node xv-outline-node xv-outline-tag" data-xv-id="0"> '+
+            '<span class="xv-node xv-outline-node xv-outline-tag xv-summary-board" data-xv-id="0"> '+
               '<span class="xv-tag-switcher-shortcut"></span>' +
               '<span class="xv-outline-node-inner">' +
                 '<span class="xv-outline-item xv-outline-tag-name">Board Members</span>' +
               '</span>' + 
             '</span>' +
-            '<span class="xv-node xv-outline-node xv-outline-tag" data-xv-id="0"> '+
+            '<span class="xv-node xv-outline-node xv-outline-tag xv-summary-grants" data-xv-id="0"> '+
               '<span class="xv-tag-switcher-shortcut"></span>' +
               '<span class="xv-outline-node-inner">' +
                 '<span class="xv-outline-item xv-outline-tag-name">Grantmaking Activity</span>' +
@@ -3375,55 +3377,76 @@ var xv_outline = (function(){
     // Summary pane
     //
 
+    var hideSummaryElement = " " + 'xv-summary-hide';
+
+    // Foundation name
+    var filerElement = document.querySelectorAll('[data-irs-key="Filer"]')[0];
+    var foundationNameElement = filerElement.querySelectorAll('[data-irs-key="BusinessNameLine1"]')[0]
+    if (foundationNameElement) {
+      var foundationNameText = foundationNameElement.parentNode.parentNode.getElementsByClassName('xv-text')[0].textContent;
+      var foundationNameTarget = document.getElementsByClassName('xv-summary-name')[0].getElementsByTagName('span')[0];
+      foundationNameTarget.textContent = foundationNameText;
+    } else {
+      document.getElementsByClassName('xv-summary-name')[0].className += hideSummaryElement;
+    }
 
     // Tax year
     var taxYearElement = document.querySelectorAll('[data-irs-key="TaxYr"]')[0];
     if (taxYearElement) {
-      var taxYearText = taxYearElement.parentNode.parentNode.getElementsByClassName('xv-text')[0].textContent;
-      var taxYearTarget = document.getElementsByClassName('xv-summary-tax-year')[0];
+      var taxYearText = taxYearElement.getElementsByClassName('xv-tag-children')[0].getElementsByClassName('xv-text')[0].textContent;
+      var taxYearTarget = document.getElementsByClassName('xv-summary-tax-year')[0].getElementsByTagName('span')[0];
       taxYearTarget.textContent = taxYearText;
-    } 
+    } else {
+      document.getElementsByClassName('xv-summary-tax-year')[0].className += hideSummaryElement;
+    }
 
     // Assets
     var assetsElement = document.querySelectorAll('[data-irs-key="FMVAssetsEOYAmt"]')[0];
     if (assetsElement) {
-      var assetsText = assetsElement.parentNode.parentNode.getElementsByClassName('xv-text')[0].textContent;
-      var assetsTarget = document.getElementsByClassName('xv-summary-assets')[0];
-      assetsTarget.textContent = assetsText;
-      var assetsNumber = document.getElementsByClassName('xv-summary-assets')[0].innerHTML;
-      var assetsNumberFormatted = parseInt(summaryNumber).toLocaleString('en');
-      document.getElementsByClassName('xv-summary-assets')[0].innerHTML = assetsNumberFormatted;
-
-    } 
-
-    // Populate summary items
-    //$( "input[data*='man']" ).val( "has man in it!" );
-    //$("li[data-pk-type*='foo']");
-    //var website = $( 'span[data-irs-key*="TaxPeriodEndDt"]').val('TaxPeriodEndDt')[0];
-    //var website2 = $( 'span[data-irs-key*="TaxPeriodEndDt"]').val('TaxPeriodEndDt')[0];
-
-    //var website = document.getElementsByClassName('xv-summary-name')[0].innerHTML; Works
-    //var websiteSource = document.getElementsByClassName('xv-tag-name').innerHTML;
-    //var websiteElement2 = document.querySelectorAll('[data-irs-key="TaxPeriodEndDt"]')[0];
-    //var websiteText2 = websiteElement.parentNode.parentNode.getElementsByClassName('xv-text')[0].textContent;
+      var assetsText = assetsElement.getElementsByClassName('xv-tag-children')[0].getElementsByClassName('xv-text')[0].textContent;
+      var assetsTextFormatted = parseInt(assetsText).toLocaleString('en');
+      var assetsTarget = document.getElementsByClassName('xv-summary-assets')[0].getElementsByTagName('span')[0];
+      assetsTarget.textContent = assetsTextFormatted;
+    } else {
+      document.getElementsByClassName('xv-summary-assets')[0].className += hideSummaryElement;
+    }
 
     // Website
     var websiteElement = document.querySelectorAll('[data-irs-key="WebsiteAddressTxt"]')[0];
-    if (websiteElement) {
-      console.log('Next Parent: ' + websiteElement.parentNode);
-      console.log('Top Parent: ' + websiteElement.parentNode.parentNode);
-
-      var websiteText = websiteElement.parentNode.parentNode.getElementsByClassName('xv-text')[0].textContent;
-      var websiteTarget = document.getElementsByClassName('xv-summary-website')[0];
+    if (websiteElement.length > 5) { //Handles n/A, N/A, etc
+      var websiteText = websiteElement.getElementsByClassName('xv-tag-children')[0].getElementsByClassName('xv-text')[0].textContent;
+      var websiteTarget = document.getElementsByClassName('xv-summary-website')[0].getElementsByTagName('a')[0];
       websiteTarget.textContent = websiteText;
+      if (new URI(websiteText).scheme === null) {
+        websiteText = 'http://' + websiteText;
+      }
       websiteTarget.href = websiteText;
-      //document.getElementsByClassName('xv-summary-website')[0].innerHTML = website;
-      console.log('SourceText: ' + websiteText);
-      console.log('Target: ' + websiteTarget);
-    } 
+    } else {
+      document.getElementsByClassName('xv-summary-website')[0].className += hideSummaryElement;
+    }
 
-    
-    //$('div:contains("BuildTs")').css('background-color', 'red');
+    //Board Members
+    var boardIRSKey = 'OfficerDirTrstKeyEmplInfoGrp';
+    var boardElement = document.querySelectorAll('[data-irs-key="' + boardIRSKey + '"]')[0];
+    if (boardElement) {
+      var boardXVID = boardElement.dataset.xvId;
+      var boardTarget = document.getElementsByClassName('xv-summary-board')[0];
+      boardTarget.dataset.xvId = boardXVID;
+    } else {
+      document.getElementsByClassName('xv-summary-board')[0].className += hideSummaryElement; 
+    }
+
+    //Grantmaking Activity
+    var grantsIRSKey = 'SupplementaryInformationGrp';
+    var grantsElement = document.querySelectorAll('[data-irs-key="' + grantsIRSKey + '"]')[0];
+    if (grantsElement) {
+      var grantsXVID = grantsElement.dataset.xvId;
+      var grantsTarget = document.getElementsByClassName('xv-summary-grants')[0];
+      grantsTarget.dataset.xvId = grantsXVID;
+    } else {
+      document.getElementsByClassName('xv-summary-grants')[0].className += hideSummaryElement; 
+    }
+
 		
 		pane_content = xv_dom.getOneByClass('xv-outline-inner', pane);
 		resize_handler = xv_dom.getOneByClass('xv-outline-rs-handler', pane);

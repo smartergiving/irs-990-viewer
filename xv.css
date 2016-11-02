@@ -687,12 +687,6 @@ body {
 	-o-transform: rotate(90deg) translateX(-25px) translateY(-4px);
 	transform: rotate(90deg) translateX(-25px) translateY(-4px)
 }
-.xv-summary-website {
-	text-transform: lowercase;
-}
-.xv-summary-name {
-	text-transform: capitalize;
-}
 .xv-outline-collapsed .xv-outline-close, .xv-outline-collapsed .xv-outline-rs-handler, .xv-outline-collapsed .xv-outline-inner, .xv-outline-collapsed .xv-shortcut-header {
 	display: none
 }
@@ -744,5 +738,14 @@ body {
 	display: none;
 }
 .xv-tag-close {
+	display: none !important;
+}
+.xv-summary-website {
+	text-transform: lowercase;
+}
+.xv-summary-name {
+	text-transform: capitalize;
+}
+.xv-summary-hide {
 	display: none !important;
 }

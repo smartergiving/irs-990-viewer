@@ -10,7 +10,7 @@
     {
       "js": [
         "xv.js",
-        "jquery-3.1.1.min.js",
+        "uri.js",
         "controller.js"
       ],
       "css": [
