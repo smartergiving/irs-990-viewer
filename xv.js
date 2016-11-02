@@ -3415,7 +3415,7 @@ var xv_outline = (function(){
     }
 
     // Website
-    if (taxYearText == "2010") {
+    if (taxYearText == "2010") { //2010 tax returns do not have a website field
       document.getElementsByClassName('xv-summary-website')[0].className += hideSummaryElement;
     } else {
       var websiteSchemas = '[data-irs-key="WebsiteAddressTxt"], [data-irs-key="WebsiteAddress"]'
@@ -3426,9 +3426,6 @@ var xv_outline = (function(){
         var websiteUrl = websiteElement.getElementsByClassName('xv-tag-children')[0].getElementsByClassName('xv-text')[0].getElementsByTagName('a')[0].href
         var websiteTarget = document.getElementsByClassName('xv-summary-website')[0].getElementsByTagName('a')[0];
         websiteTarget.textContent = websiteText;
-        if (new URI(websiteText).scheme === null) {
-          websiteText = 'http://' + websiteText;
-        }
         websiteTarget.href = websiteUrl;
       } else {
         document.getElementsByClassName('xv-summary-website')[0].className += hideSummaryElement;

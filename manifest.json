@@ -10,7 +10,6 @@
     {
       "js": [
         "xv.js",
-        "uri.js",
         "controller.js"
       ],
       "css": [
