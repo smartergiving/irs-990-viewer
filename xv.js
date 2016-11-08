@@ -3415,13 +3415,13 @@ var xv_outline = (function(){
     }
 
     // Website
-    if (taxYearText == "2010") { //2010 tax returns do not have a website field
+    var websiteSchemas = '[data-irs-key="WebsiteAddressTxt"], [data-irs-key="WebsiteAddress"]';
+    var websiteElement = document.querySelectorAll(websiteSchemas)[0];
+    if (taxYearText == "2010" || !websiteElement) { //2010 tax returns do not have a website field
       document.getElementsByClassName('xv-summary-website')[0].className += hideSummaryElement;
     } else {
-      var websiteSchemas = '[data-irs-key="WebsiteAddressTxt"], [data-irs-key="WebsiteAddress"]'
-      var websiteElement = document.querySelectorAll(websiteSchemas)[0];
-      var websiteTextCheck = websiteElement.getElementsByClassName('xv-tag-children')[0].getElementsByClassName('xv-text')[0].getElementsByTagName('a')[0];
-      if (websiteElement && websiteTextCheck) {
+      var websiteTextCheck = document.querySelectorAll(websiteSchemas)[0].getElementsByClassName('xv-tag-children')[0].getElementsByClassName('xv-text')[0].getElementsByTagName('a')[0];
+      if (websiteTextCheck) {
         var websiteText = websiteElement.getElementsByClassName('xv-tag-children')[0].getElementsByClassName('xv-text')[0].getElementsByTagName('a')[0].textContent
         var websiteUrl = websiteElement.getElementsByClassName('xv-tag-children')[0].getElementsByClassName('xv-text')[0].getElementsByTagName('a')[0].href
         var websiteTarget = document.getElementsByClassName('xv-summary-website')[0].getElementsByTagName('a')[0];
@@ -3433,7 +3433,7 @@ var xv_outline = (function(){
     }
 
     //Board Members
-    var boardSchemas = '[data-irs-key="OfficerDirTrstKeyEmplInfoGrp"], [data-irs-key="OfcrDirTrusteesKeyEmployeeInfo"]'
+    var boardSchemas = '[data-irs-key="OfficerDirTrstKeyEmplInfoGrp"], [data-irs-key="OfcrDirTrusteesKeyEmployeeInfo"]';
     var boardIRSKey = '';
     var boardElement = document.querySelectorAll(boardSchemas)[0];
     if (boardElement) {
@@ -3445,7 +3445,7 @@ var xv_outline = (function(){
     }
 
     //Grantmaking Activity
-    var grantsSchemas = '[data-irs-key="SupplementaryInformationGrp"], [data-irs-key="SupplementaryInformation"]'
+    var grantsSchemas = '[data-irs-key="SupplementaryInformationGrp"], [data-irs-key="SupplementaryInformation"]';
     var grantsElement = document.querySelectorAll(grantsSchemas)[0];
     if (grantsElement) {
       var grantsXVID = grantsElement.dataset.xvId;
