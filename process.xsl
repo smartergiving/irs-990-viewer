@@ -30,6 +30,7 @@
 		<div class="xv-search-panel">
 			<input type="search" class="xv-search-field" spellcheck="false" placeholder="Search by 990PF section name" />
 			<span class="xv-search-xpath-result"></span>
+			<span class="xv-options-download"><a href="" download="">Download XML File</a></span>
 			<span class="xv-options-href">An open source tool from your friends at <a href="https://smartergiving.org" target="_blank">SmarterGiving</a></span>
 			<!-- <a href="{$options_url}" class="xv-options-href" target="_blank">Options</a> -->
 		</div>
