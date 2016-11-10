@@ -1,6 +1,6 @@
 {
-  "name": "IRS Form 990PF Viewer",
-  "description": "The IRS freely publishes IRS Form 990s in machine-readable format. This tool makes it easier for humans to read the files. **Form 990PF only**",
+  "name": "IRS Form 990-PF Viewer",
+  "description": "Helps humans view machine-readable electronic tax filings of US-based foundations (Form 990-PF only)",
   "version": "0.1.0",
   "manifest_version": 2,
   "background": {
