@@ -3335,6 +3335,7 @@ var xv_outline = (function(){
           '<div class="xv-summary-inner">'+ 
             '<span class="xv-node xv-summary-node"> '+
               '<div class="xv-summary-name"><span></span></div>' +
+              '<div class="xv-summary-location"><span class="xv-summary-city"></span>, <span class="xv-summary-state"></span></div>' +
               '<div class="xv-summary-tax-year">Tax Year: <span></span></div>' +
               '<div class="xv-summary-assets">Assets: $<span></span></div>' +
               '<div class="xv-summary-website"><a target="_blank"></a></div>' +
@@ -3390,6 +3391,23 @@ var xv_outline = (function(){
     } else {
       document.getElementsByClassName('xv-summary-name')[0].className += hideSummaryElement;
     }
+
+    // Location
+    var citySchemas = '[data-irs-key="CityNm"], [data-irs-key="City"]';
+    var stateSchemas = '[data-irs-key="StateAbbreviationCd"], [data-irs-key="State"]';
+    var cityElement = filerElement.querySelectorAll(citySchemas)[0];
+    var stateElement = filerElement.querySelectorAll(stateSchemas)[0];
+    if (cityElement && stateElement) {
+      var cityText = cityElement.getElementsByClassName('xv-tag-children')[0].getElementsByClassName('xv-text')[0].textContent;
+      var stateText = stateElement.getElementsByClassName('xv-tag-children')[0].getElementsByClassName('xv-text')[0].textContent;
+      var cityTarget = document.getElementsByClassName('xv-summary-location')[0].getElementsByClassName('xv-summary-city')[0];
+      var stateTarget = document.getElementsByClassName('xv-summary-location')[0].getElementsByClassName('xv-summary-state')[0];
+      cityTarget.textContent = cityText.toLowerCase();
+      stateTarget.textContent = stateText;
+    } else {
+      document.getElementsByClassName('xv-summary-location')[0].className += hideSummaryElement;
+    }
+    
 
     // Tax year
     var taxYearSchemas = '[data-irs-key="TaxYr"], [data-irs-key="TaxYear"]'

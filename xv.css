@@ -743,8 +743,11 @@ body {
 .xv-summary-website {
 	text-transform: lowercase;
 }
-.xv-summary-name {
+.xv-summary-name, .xv-summary-city {
 	text-transform: capitalize;
+}
+.xv-summary-location, .xv-summary-assets {
+	padding-bottom: 10px;
 }
 .xv-summary-hide {
 	display: none !important;
